@@ -1,0 +1,12 @@
+package com.dalima.wikipedia_codenicely_assignment
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "images")
+data class ImageEntity(
+    @PrimaryKey val url: String,
+    val user: String?,
+    val timestamp: String?,
+    val fetchedAt: Long = System.currentTimeMillis()
+)
