@@ -56,4 +56,18 @@ interface ApiService {
         @Query("continue") cont: String? = null,
         @Query("gcmcontinue") gcmcontinue: String? = null
     ): FeaturedImagesResponse
+    // Category members (articles inside a category)
+    @GET("w/api.php")
+    suspend fun categoryMembers(
+        @Query("action") action: String = "query",
+        @Query("format") format: String = "json",
+        @Query("list") list: String = "categorymembers",
+        @Query("cmtitle") cmtitle: String,   // "Category:XYZ"
+        @Query("cmtype") cmtype: String = "page", // only pages, not subcats/files
+        @Query("cmlimit") cmlimit: Int = 20,
+        @Query("formatversion") formatversion: Int = 2,
+        @Query("continue") cont: String? = null,
+        @Query("cmcontinue") cmcontinue: String? = null
+    ): CategoryMembersResponse
+
 }

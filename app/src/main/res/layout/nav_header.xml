@@ -1,17 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:gravity="bottom"
+    android:padding="20dp"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
-    android:background="?attr/colorPrimary"
-    android:gravity="bottom">
+    android:layout_height="180dp"
+    android:background="@drawable/nav_header_gradient">
 
+    <!-- Optional Logo/Icon -->
+    <ImageView
+        android:id="@+id/nav_logo"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="@string/app_name"
+        android:layout_marginBottom="8dp"
+        app:tint="@android:color/white" />
+
+    <!-- Main Title -->
     <TextView
         android:id="@+id/nav_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Wiki Reader"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:shadowColor="#66000000"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="4"/>
+
+    <!-- Optional Subtitle -->
+    <TextView
+        android:id="@+id/nav_subtitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Your daily knowledge hub"
+        android:textColor="#DDFFFFFF"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"/>
 </LinearLayout>

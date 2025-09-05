@@ -86,12 +86,6 @@ import com.google.gson.annotations.SerializedName
 //    val timestamp: String?
 //)
 // Continue block common
-data class ContinueBlock(
-    @SerializedName("continue") val continueToken: String? = null,
-    val grncontinue: String? = null,
-    val accontinue: String? = null,
-    val gcmcontinue: String? = null
-)
 
 // ---------------- Random ----------------
 data class RandomArticlesResponse(
@@ -142,3 +136,37 @@ data class FeaturedPage(
     val imageinfo: List<ImageInfo>?
 )
 data class ImageInfo(val timestamp: String?, val user: String?, val url: String?)
+
+data class CategoryMembersResponse(
+    val batchcomplete: Boolean?,
+    @SerializedName("continue") val cont: ContinueBlock?,
+    val query: CategoryMembersQuery?
+)
+
+data class CategoryMembersQuery(
+    val categorymembers: List<CategoryMember>?
+)
+
+data class CategoryMember(
+    val pageid: Long?,
+    val ns: Int?,
+    val title: String?,
+    val extract: String?,       // you may not get this unless `prop=extracts` is added
+    val thumbnail: Thumbnail?   // same, only if `prop=pageimages`
+)
+data class ContinueBlock(
+    @SerializedName("continue")
+    val continueToken: String? = null,
+
+    // generator= random
+    val grncontinue: String? = null,
+
+    // categories list
+    val accontinue: String? = null,
+
+    // commons generator=categorymembers (on commons API) uses gcmcontinue
+    val gcmcontinue: String? = null,
+
+    // list=categorymembers (on en.wikipedia) uses cmcontinue
+    val cmcontinue: String? = null
+)
