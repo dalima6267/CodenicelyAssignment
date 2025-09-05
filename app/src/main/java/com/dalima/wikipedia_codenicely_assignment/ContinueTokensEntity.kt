@@ -5,6 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "continue_tokens")
 data class ContinueTokensEntity(
-    @PrimaryKey val endpoint: String,
+    @PrimaryKey val endpoint: String, // "random", "featured", "categories"
     val token: String?
 )

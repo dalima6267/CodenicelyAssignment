@@ -11,13 +11,11 @@ class CategoryAdapter :
     ListAdapter<CategoryEntity, CategoryAdapter.CategoryViewHolder>(DiffCallback) {
 
     object DiffCallback : DiffUtil.ItemCallback<CategoryEntity>() {
-        override fun areItemsTheSame(oldItem: CategoryEntity, newItem: CategoryEntity): Boolean {
-            return oldItem.name == newItem.name
-        }
+        override fun areItemsTheSame(oldItem: CategoryEntity, newItem: CategoryEntity) =
+            oldItem.name == newItem.name
 
-        override fun areContentsTheSame(oldItem: CategoryEntity, newItem: CategoryEntity): Boolean {
-            return oldItem == newItem
-        }
+        override fun areContentsTheSame(oldItem: CategoryEntity, newItem: CategoryEntity) =
+            oldItem == newItem
     }
 
     inner class CategoryViewHolder(private val binding: ItemCategoryBinding) :
@@ -28,11 +26,7 @@ class CategoryAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val binding = ItemCategoryBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CategoryViewHolder(binding)
     }
 

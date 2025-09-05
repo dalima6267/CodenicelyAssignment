@@ -6,37 +6,36 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private val logging= HttpLoggingInterceptor().apply{
-        level=HttpLoggingInterceptor.Level.BASIC
+    private val logging = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
     }
-    private val client = OkHttpClient.Builder()
+
+    private val client: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(logging)
         .addInterceptor { chain ->
-            val request = chain.request().newBuilder()
+            val req = chain.request().newBuilder()
+                // Wikimedia asks for descriptive User-Agent: app/version (contact)
                 .header("User-Agent", "WikiReaderApp/1.0 (dalima62657@gmail.com)")
                 .build()
-            chain.proceed(request)
+            chain.proceed(req)
         }
         .build()
 
-
     val wikiService: ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl("https://en.wikipedia.org/w/")
+            .baseUrl("https://en.wikipedia.org/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
-
     }
-    val commonsRetrofit by lazy {
+
+    val commonsService: ApiService by lazy {
         Retrofit.Builder()
             .baseUrl("https://commons.wikimedia.org/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
-    val commonsService: ApiService by lazy {
-        commonsRetrofit.create(ApiService::class.java)
+            .create(ApiService::class.java)
     }
 }

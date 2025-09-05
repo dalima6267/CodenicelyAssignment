@@ -1,6 +1,5 @@
 package com.dalima.wikipedia_codenicely_assignment
 
-import android.R.attr.content
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -10,93 +9,85 @@ class WikiRepository(private val dao: WikiDao) {
     private val wikiService = RetrofitClient.wikiService
     private val commonsService = RetrofitClient.commonsService
 
-    // -------------------- RANDOM ARTICLES --------------------
+    // RANDOM
     suspend fun fetchRandomArticles(continueToken: String? = null): Pair<List<ArticleEntity>, String?> {
         return withContext(Dispatchers.IO) {
             try {
+                // call
                 val response = wikiService.randomArticles(grncontinue = continueToken)
 
-                val newArticles = mutableListOf<ArticleEntity>()
-                response.query?.pages?.values?.forEach { page ->
-                    val pageId = page.pageid ?: 0
-                    val title = page.title ?: ""
-                    val snippet = page.revisions?.firstOrNull()?.content
-                    newArticles.add(
-                        ArticleEntity(
-                            pageId = pageId.toLong(),
-                            title = title,
-                            snippet = snippet,
-                            content = snippet ?: "" // or `snippet` if you don't have full content yet
-                        )
+                // map pages -> ArticleEntity
+                val pages = response.query?.pages ?: emptyList()
+                val existingIds = dao.getAllArticleIds().toHashSet()
+                val newEntities = pages.mapNotNull { p ->
+                    val id = p.pageid ?: return@mapNotNull null
+                    if (existingIds.contains(id)) return@mapNotNull null
+                    ArticleEntity(
+                        pageId = id,
+                        title = p.title ?: "(untitled)",
+                        snippet = p.terms?.description?.firstOrNull() ?: p.extract,
+                        content = p.extract,
+                        imageUrl = p.thumbnail?.source
                     )
                 }
 
-                if (newArticles.isNotEmpty()) dao.insertArticles(newArticles)
+                if (newEntities.isNotEmpty()) dao.insertArticles(newEntities)
 
-                val cont = response.continueInfo?.grncontinue
-                if (cont != null) dao.insertContinueToken(ContinueTokensEntity("random", cont))
+                val next = response.cont?.grncontinue
+                if (next != null) dao.insertContinueToken(ContinueTokensEntity("random", next))
 
-                Pair(newArticles, cont)
+                Pair(newEntities, next)
             } catch (e: Exception) {
-                Log.e("WikiRepo", "error fetchRandomArticles: ${e.message}")
-                Pair(dao.getAllArticles(), null) // fallback to local
+                Log.e("WikiRepo", "fetchRandomArticles failed: ${e.message}", e)
+                Pair(dao.getAllArticles(), null)
             }
         }
     }
 
-    // -------------------- FEATURED IMAGES --------------------
-    suspend fun fetchFeaturedImages(url: String): Pair<List<ImageEntity>, String?> {
+    // FEATURED IMAGES (Commons)
+    suspend fun fetchFeaturedImages(continueToken: String? = null): Pair<List<ImageEntity>, String?> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = commonsService.featuredImages(url)
-
-                val images = mutableListOf<ImageEntity>()
-                response.query?.categorymembers?.forEach { member ->
-                    // You may want another API call to fetch actual imageinfo, but here we keep it simple
-                    images.add(
-                        ImageEntity(
-                            url = "https://commons.wikimedia.org/wiki/${member.title}",
-                            user = null,
-                            timestamp = null
-                        )
+                val response = commonsService.featuredImages(gcmcontinue = continueToken)
+                val pages = response.query?.pages ?: emptyList()
+                val images = pages.mapNotNull { p ->
+                    val info = p.imageinfo?.firstOrNull() ?: return@mapNotNull null
+                    ImageEntity(
+                        url = info.url ?: return@mapNotNull null,
+                        user = info.user,
+                        timestamp = info.timestamp,
+                        title = p.title
                     )
                 }
-
                 if (images.isNotEmpty()) dao.insertImages(images)
-
-                // Commons featuredImages endpoint usually doesn’t use continue, but in case you add it later:
-                val cont: String? = null
-
-                Pair(images, cont)
+                val next = response.cont?.gcmcontinue
+                if (next != null) dao.insertContinueToken(ContinueTokensEntity("featured", next))
+                Pair(images, next)
             } catch (e: Exception) {
+                Log.e("WikiRepo", "fetchFeaturedImages failed: ${e.message}", e)
                 Pair(dao.getAllImages(), null)
             }
         }
     }
 
-    // -------------------- CATEGORIES --------------------
-    suspend fun fetchCategories(prefix: String = "List of", accontinue: String? = null): Pair<List<CategoryEntity>, String?> {
+    // CATEGORIES
+    suspend fun fetchCategories(prefix: String = "List of", continueToken: String? = null): Pair<List<CategoryEntity>, String?> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = wikiService.categories(acprefix = prefix, accontinue = accontinue)
-
-                val categories = response.query?.allcategories
-                    ?.mapNotNull { item -> item.category?.let { CategoryEntity(it) } }
-                    ?: emptyList()
-
-                if (categories.isNotEmpty()) dao.insertCategories(categories)
-
-                val cont = response.continueInfo?.accontinue
-                if (cont != null) dao.insertContinueToken(ContinueTokensEntity("categories", cont))
-
-                Pair(categories, cont)
+                val response = wikiService.categories(acprefix = prefix, accontinue = continueToken)
+                val cats = response.query?.allcategories?.mapNotNull { it.category?.let { CategoryEntity(it) } } ?: emptyList()
+                if (cats.isNotEmpty()) dao.insertCategories(cats)
+                val next = response.cont?.accontinue
+                if (next != null) dao.insertContinueToken(ContinueTokensEntity("categories", next))
+                Pair(cats, next)
             } catch (e: Exception) {
+                Log.e("WikiRepo", "fetchCategories failed: ${e.message}", e)
                 Pair(dao.getAllCategories(), null)
             }
         }
     }
 
-    // -------------------- LOCAL CACHE HELPERS --------------------
+    // local helpers
     suspend fun localArticles() = dao.getAllArticles()
     suspend fun localImages() = dao.getAllImages()
     suspend fun localCategories() = dao.getAllCategories()

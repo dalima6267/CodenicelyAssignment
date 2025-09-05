@@ -13,6 +13,9 @@ interface WikiDao {
     @Query("SELECT * FROM articles ORDER BY fetchedAt DESC")
     suspend fun getAllArticles(): List<ArticleEntity>
 
+    @Query("SELECT pageId FROM articles")
+    suspend fun getAllArticleIds(): List<Long>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertImages(list: List<ImageEntity>)
 

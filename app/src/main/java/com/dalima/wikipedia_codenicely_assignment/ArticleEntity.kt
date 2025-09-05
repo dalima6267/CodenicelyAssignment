@@ -9,5 +9,6 @@ data class ArticleEntity(
     val title: String,
     val snippet: String?,
     val content: String?,
+    val imageUrl: String? = null,
     val fetchedAt: Long = System.currentTimeMillis()
 )

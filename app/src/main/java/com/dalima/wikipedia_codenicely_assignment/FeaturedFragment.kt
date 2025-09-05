@@ -9,13 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dalima.wikipedia_codenicely_assignment.databinding.FragmentListBinding
 
-
 class FeaturedFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: FeaturedViewModel
-    private val adapter = ImageAdapter() // You’ll need an ImageAdapter like ArticleAdapter
+    private val adapter = ImageAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
@@ -32,19 +31,17 @@ class FeaturedFragment : Fragment() {
 
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.loadInitial()
-            binding.swipeRefresh.isRefreshing = false
         }
 
         viewModel.images.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
+            binding.swipeRefresh.isRefreshing = false
         }
 
         binding.recyclerView.addOnScrollListener(object: androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                 val lm = rv.layoutManager as LinearLayoutManager
-                val total = lm.itemCount
-                val last = lm.findLastVisibleItemPosition()
-                if (total > 0 && last >= total - 3) {
+                if (lm.findLastVisibleItemPosition() >= lm.itemCount - 3) {
                     viewModel.loadNext()
                 }
             }

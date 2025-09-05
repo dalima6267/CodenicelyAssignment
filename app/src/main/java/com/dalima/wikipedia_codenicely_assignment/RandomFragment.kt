@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dalima.wikipedia_codenicely_assignment.databinding.FragmentListBinding
 
-
 class RandomFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
@@ -32,25 +31,22 @@ class RandomFragment : Fragment() {
 
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.loadInitial()
-            binding.swipeRefresh.isRefreshing = false
         }
 
         viewModel.articles.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
+            binding.swipeRefresh.isRefreshing = false
         }
 
-        binding.recyclerView.addOnScrollListener(object: androidx.recyclerview.widget.RecyclerView.OnScrollListener(){
+        binding.recyclerView.addOnScrollListener(object: androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
-                val lm = rv.layoutManager as androidx.recyclerview.widget.LinearLayoutManager
-                val total = lm.itemCount
-                val last = lm.findLastVisibleItemPosition()
-                if (total > 0 && last >= total - 3) {
+                val lm = rv.layoutManager as LinearLayoutManager
+                if (lm.findLastVisibleItemPosition() >= lm.itemCount - 3) {
                     viewModel.loadNext()
                 }
             }
         })
 
-        // initial load
         viewModel.loadInitial()
     }
 

@@ -2,39 +2,33 @@ package com.dalima.wikipedia_codenicely_assignment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.dalima.wikipedia_codenicely_assignment.databinding.ItemArticleBinding
 
-class ArticleAdapter(private val items: MutableList<ArticleEntity> = mutableListOf()) :
-    RecyclerView.Adapter<ArticleAdapter.VH>() {
+class ArticleAdapter :
+    ListAdapter<ArticleEntity, ArticleAdapter.VH>(Diff) {
 
-    fun submitList(newItems: List<ArticleEntity>) {
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
+    object Diff : DiffUtil.ItemCallback<ArticleEntity>() {
+        override fun areItemsTheSame(old: ArticleEntity, new: ArticleEntity) = old.pageId == new.pageId
+        override fun areContentsTheSame(old: ArticleEntity, new: ArticleEntity) = old == new
     }
 
-    fun append(newItems: List<ArticleEntity>) {
-        val start = items.size
-        items.addAll(newItems)
-        notifyItemRangeInserted(start, newItems.size)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val binding = ItemArticleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VH(binding)
-    }
-
-    override fun getItemCount() = items.size
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.bind(items[position])
-    }
-
-    inner class VH(private val binding: ItemArticleBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class VH(private val b: ItemArticleBinding) : RecyclerView.ViewHolder(b.root) {
         fun bind(item: ArticleEntity) {
-            binding.tvTitle.text = item.title
-            binding.tvSnippet.text = item.snippet ?: ""
-            // click to open web page can be added
+            b.tvTitle.text = item.title
+            b.tvSnippet.text = item.snippet ?: ""
+            if (!item.imageUrl.isNullOrBlank()) {
+                Glide.with(b.articleImage.context).load(item.imageUrl).into(b.articleImage)
+                b.articleImage.visibility = android.view.View.VISIBLE
+            } else b.articleImage.visibility = android.view.View.GONE
         }
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        VH(ItemArticleBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
+    override fun onBindViewHolder(holder: VH, position: Int) = holder.bind(getItem(position))
 }

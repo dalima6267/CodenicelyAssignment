@@ -1,13 +1,9 @@
 package com.dalima.wikipedia_codenicely_assignment
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 
 class RandomViewModel(private val repo: WikiRepository) : ViewModel() {
-
     private val _articles = MutableLiveData<List<ArticleEntity>>()
     val articles: LiveData<List<ArticleEntity>> = _articles
 
@@ -18,7 +14,7 @@ class RandomViewModel(private val repo: WikiRepository) : ViewModel() {
         if (loading) return
         loading = true
         viewModelScope.launch {
-            val (list, token) = repo.fetchRandomArticles(continueToken = null)
+            val (list, token) = repo.fetchRandomArticles(null)
             _articles.postValue(list)
             continueToken = token
             loading = false
@@ -26,13 +22,13 @@ class RandomViewModel(private val repo: WikiRepository) : ViewModel() {
     }
 
     fun loadNext() {
-        if (loading) return
+        if (loading || continueToken == null) return
         loading = true
         viewModelScope.launch {
-            val (list, token) = repo.fetchRandomArticles(continueToken = continueToken)
-            val current = _articles.value?.toMutableList() ?: mutableListOf()
-            current.addAll(list)
-            _articles.postValue(current)
+            val (list, token) = repo.fetchRandomArticles(continueToken)
+            val cur = _articles.value?.toMutableList() ?: mutableListOf()
+            cur.addAll(list)
+            _articles.postValue(cur)
             continueToken = token
             loading = false
         }
@@ -40,7 +36,5 @@ class RandomViewModel(private val repo: WikiRepository) : ViewModel() {
 }
 
 class RandomViewModelFactory(private val repo: WikiRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return RandomViewModel(repo) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = RandomViewModel(repo) as T
 }

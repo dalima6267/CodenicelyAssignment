@@ -8,5 +8,6 @@ data class ImageEntity(
     @PrimaryKey val url: String,
     val user: String?,
     val timestamp: String?,
+    val title: String?,
     val fetchedAt: Long = System.currentTimeMillis()
 )
