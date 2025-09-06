@@ -1,8 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.Wikipedia_Codenicely_Assignment" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Both Toolbar and StatusBar will use this -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+
+        <!-- For dark text/icons on light status bar, set true -->
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.Wikipedia_Codenicely_Assignment" parent="Base.Theme.Wikipedia_Codenicely_Assignment" />

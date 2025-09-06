@@ -1,4 +1,4 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dalima.wikipedia_codenicely_assignment.databinding.ItemImageBinding
+import com.dalima.wikipedia_codenicely_assignment.db.ImageEntity
 
 class ImageAdapter : ListAdapter<ImageEntity, ImageAdapter.VH>(Diff) {
     object Diff : DiffUtil.ItemCallback<ImageEntity>() {

@@ -1,4 +1,4 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dalima.wikipedia_codenicely_assignment.databinding.ItemCategoryBinding
+import com.dalima.wikipedia_codenicely_assignment.db.CategoryEntity
 
 class CategoryAdapter :
     ListAdapter<CategoryEntity, CategoryAdapter.CategoryViewHolder>(DiffCallback) {

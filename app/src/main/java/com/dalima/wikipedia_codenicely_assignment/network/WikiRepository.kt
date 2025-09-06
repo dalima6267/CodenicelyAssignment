@@ -1,6 +1,11 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.network
 
 import android.util.Log
+import com.dalima.wikipedia_codenicely_assignment.db.ArticleEntity
+import com.dalima.wikipedia_codenicely_assignment.db.CategoryEntity
+import com.dalima.wikipedia_codenicely_assignment.db.ContinueTokensEntity
+import com.dalima.wikipedia_codenicely_assignment.db.ImageEntity
+import com.dalima.wikipedia_codenicely_assignment.db.WikiDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -75,7 +80,9 @@ class WikiRepository(private val dao: WikiDao) {
         return withContext(Dispatchers.IO) {
             try {
                 val response = wikiService.categories(acprefix = prefix, accontinue = continueToken)
-                val cats = response.query?.allcategories?.mapNotNull { it.category?.let { CategoryEntity(it) } } ?: emptyList()
+                val cats =
+                    response.query?.allcategories?.mapNotNull { it.category?.let { CategoryEntity(it) } }
+                        ?: emptyList()
                 if (cats.isNotEmpty()) dao.insertCategories(cats)
                 val next = response.cont?.accontinue
                 if (next != null) dao.insertContinueToken(ContinueTokensEntity("categories", next))

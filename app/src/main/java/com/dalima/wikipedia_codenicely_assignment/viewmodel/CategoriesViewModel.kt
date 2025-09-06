@@ -1,6 +1,8 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.viewmodel
 
 import androidx.lifecycle.*
+import com.dalima.wikipedia_codenicely_assignment.db.CategoryEntity
+import com.dalima.wikipedia_codenicely_assignment.network.WikiRepository
 import kotlinx.coroutines.launch
 
 class CategoriesViewModel(private val repo: WikiRepository) : ViewModel() {

@@ -1,11 +1,14 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.network
 
+import com.dalima.wikipedia_codenicely_assignment.data.CategoriesResponse
+import com.dalima.wikipedia_codenicely_assignment.data.CategoryMembersResponse
+import com.dalima.wikipedia_codenicely_assignment.data.FeaturedImagesResponse
+import com.dalima.wikipedia_codenicely_assignment.data.RandomArticlesResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
 
-    // Random articles (en.wikipedia.org/w/api.php)
     @GET("w/api.php")
     suspend fun randomArticles(
         @Query("format") format: String = "json",
@@ -27,7 +30,6 @@ interface ApiService {
         @Query("excontinue") excontinue: String? = null
     ): RandomArticlesResponse
 
-    // Categories list (en.wikipedia.org/w/api.php)
     @GET("w/api.php")
     suspend fun categories(
         @Query("action") action: String = "query",
@@ -40,7 +42,6 @@ interface ApiService {
         @Query("accontinue") accontinue: String? = null
     ): CategoriesResponse
 
-    // Featured images from Commons (commons.wikimedia.org/w/api.php)
     @GET("w/api.php")
     suspend fun featuredImages(
         @Query("action") action: String = "query",
@@ -56,18 +57,6 @@ interface ApiService {
         @Query("continue") cont: String? = null,
         @Query("gcmcontinue") gcmcontinue: String? = null
     ): FeaturedImagesResponse
-    // Category members (articles inside a category)
-    @GET("w/api.php")
-    suspend fun categoryMembers(
-        @Query("action") action: String = "query",
-        @Query("format") format: String = "json",
-        @Query("list") list: String = "categorymembers",
-        @Query("cmtitle") cmtitle: String,   // "Category:XYZ"
-        @Query("cmtype") cmtype: String = "page", // only pages, not subcats/files
-        @Query("cmlimit") cmlimit: Int = 20,
-        @Query("formatversion") formatversion: Int = 2,
-        @Query("continue") cont: String? = null,
-        @Query("cmcontinue") cmcontinue: String? = null
-    ): CategoryMembersResponse
+
 
 }

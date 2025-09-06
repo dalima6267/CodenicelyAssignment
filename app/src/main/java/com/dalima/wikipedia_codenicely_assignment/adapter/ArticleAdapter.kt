@@ -1,12 +1,14 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dalima.wikipedia_codenicely_assignment.databinding.ItemArticleBinding
+import com.dalima.wikipedia_codenicely_assignment.db.ArticleEntity
 
 class ArticleAdapter :
     ListAdapter<ArticleEntity, ArticleAdapter.VH>(Diff) {
@@ -22,8 +24,8 @@ class ArticleAdapter :
             b.tvSnippet.text = item.snippet ?: ""
             if (!item.imageUrl.isNullOrBlank()) {
                 Glide.with(b.articleImage.context).load(item.imageUrl).into(b.articleImage)
-                b.articleImage.visibility = android.view.View.VISIBLE
-            } else b.articleImage.visibility = android.view.View.GONE
+                b.articleImage.visibility = View.VISIBLE
+            } else b.articleImage.visibility = View.GONE
         }
     }
 

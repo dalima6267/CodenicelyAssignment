@@ -1,13 +1,19 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.dalima.wikipedia_codenicely_assignment.viewmodel.CategoriesViewModel
+import com.dalima.wikipedia_codenicely_assignment.viewmodel.CategoriesViewModelFactory
+import com.dalima.wikipedia_codenicely_assignment.adapter.CategoryAdapter
 import com.dalima.wikipedia_codenicely_assignment.databinding.FragmentListBinding
+import com.dalima.wikipedia_codenicely_assignment.db.AppDatabase
+import com.dalima.wikipedia_codenicely_assignment.network.WikiRepository
 
 class CategoriesFragment : Fragment() {
 
@@ -22,9 +28,10 @@ class CategoriesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val dao = AppDatabase.getInstance(requireContext()).wikiDao()
+        val dao = AppDatabase.Companion.getInstance(requireContext()).wikiDao()
         val repo = WikiRepository(dao)
-        viewModel = ViewModelProvider(this, CategoriesViewModelFactory(repo)).get(CategoriesViewModel::class.java)
+        viewModel = ViewModelProvider(this, CategoriesViewModelFactory(repo)).get(
+            CategoriesViewModel::class.java)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
@@ -38,8 +45,8 @@ class CategoriesFragment : Fragment() {
             binding.swipeRefresh.isRefreshing = false
         }
 
-        binding.recyclerView.addOnScrollListener(object: androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrolled(rv: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+        binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                 val lm = rv.layoutManager as LinearLayoutManager
                 if (lm.findLastVisibleItemPosition() >= lm.itemCount - 3) {
                     viewModel.loadNext()

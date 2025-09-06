@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Empty category acts like a top margin -->
+    <PreferenceCategory
+        android:title=""
+        android:layout="@layout/pref_spacer" />
+
+    <ListPreference
+        android:key="theme_pref"
+        android:title="App Theme"
+        android:entries="@array/theme_options"
+        android:entryValues="@array/theme_values"
+        android:defaultValue="system" />
+
+</PreferenceScreen>
+

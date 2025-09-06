@@ -48,7 +48,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:padding="12dp"
-            android:shadowColor="#AA000000"
+            android:shadowColor="@color/shadow"
             android:shadowDx="0"
             android:shadowDy="2"
             android:shadowRadius="4"

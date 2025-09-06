@@ -1,4 +1,4 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

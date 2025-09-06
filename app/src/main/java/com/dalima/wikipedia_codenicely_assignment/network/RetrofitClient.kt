@@ -1,4 +1,4 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.network
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,7 +14,6 @@ object RetrofitClient {
         .addInterceptor(logging)
         .addInterceptor { chain ->
             val req = chain.request().newBuilder()
-                // Wikimedia asks for descriptive User-Agent: app/version (contact)
                 .header("User-Agent", "WikiReaderApp/1.0 (dalima62657@gmail.com)")
                 .build()
             chain.proceed(req)

@@ -23,11 +23,11 @@
         android:id="@+id/nav_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Wiki Reader"
+        android:text="@string/wiki_reader"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:shadowColor="#66000000"
+        android:shadowColor="@color/black"
         android:shadowDx="0"
         android:shadowDy="2"
         android:shadowRadius="4"/>
@@ -37,8 +37,8 @@
         android:id="@+id/nav_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your daily knowledge hub"
-        android:textColor="#DDFFFFFF"
+        android:text="@string/your_daily_knowledge_hub"
+        android:textColor="@color/white"
         android:textSize="14sp"
         android:layout_marginTop="4dp"/>
 </LinearLayout>

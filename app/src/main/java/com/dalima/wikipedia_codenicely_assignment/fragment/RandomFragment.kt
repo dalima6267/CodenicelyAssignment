@@ -1,20 +1,26 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.dalima.wikipedia_codenicely_assignment.viewmodel.RandomViewModel
+import com.dalima.wikipedia_codenicely_assignment.viewmodel.RandomViewModelFactory
+import com.dalima.wikipedia_codenicely_assignment.adapter.ArticleAdapter
 import com.dalima.wikipedia_codenicely_assignment.databinding.FragmentListBinding
+import com.dalima.wikipedia_codenicely_assignment.db.AppDatabase
+import com.dalima.wikipedia_codenicely_assignment.network.WikiRepository
 
-class FeaturedFragment : Fragment() {
+class RandomFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: FeaturedViewModel
-    private val adapter = ImageAdapter()
+    private lateinit var viewModel: RandomViewModel
+    private val adapter = ArticleAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
@@ -22,9 +28,9 @@ class FeaturedFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val dao = AppDatabase.getInstance(requireContext()).wikiDao()
+        val dao = AppDatabase.Companion.getInstance(requireContext()).wikiDao()
         val repo = WikiRepository(dao)
-        viewModel = ViewModelProvider(this, FeaturedViewModelFactory(repo)).get(FeaturedViewModel::class.java)
+        viewModel = ViewModelProvider(this, RandomViewModelFactory(repo)).get(RandomViewModel::class.java)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
@@ -33,13 +39,13 @@ class FeaturedFragment : Fragment() {
             viewModel.loadInitial()
         }
 
-        viewModel.images.observe(viewLifecycleOwner) { list ->
+        viewModel.articles.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
             binding.swipeRefresh.isRefreshing = false
         }
 
-        binding.recyclerView.addOnScrollListener(object: androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrolled(rv: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+        binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                 val lm = rv.layoutManager as LinearLayoutManager
                 if (lm.findLastVisibleItemPosition() >= lm.itemCount - 3) {
                     viewModel.loadNext()

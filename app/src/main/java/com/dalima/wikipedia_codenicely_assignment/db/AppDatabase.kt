@@ -1,9 +1,14 @@
-package com.dalima.wikipedia_codenicely_assignment
+package com.dalima.wikipedia_codenicely_assignment.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.dalima.wikipedia_codenicely_assignment.db.ArticleEntity
+import com.dalima.wikipedia_codenicely_assignment.db.CategoryEntity
+import com.dalima.wikipedia_codenicely_assignment.db.ContinueTokensEntity
+import com.dalima.wikipedia_codenicely_assignment.db.ImageEntity
+import com.dalima.wikipedia_codenicely_assignment.db.WikiDao
 
 @Database(
     entities = [ ArticleEntity::class,
